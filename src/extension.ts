@@ -13,8 +13,7 @@ export function activate(context: vscode.ExtensionContext) {
       createStyleGuide()
     ),
 
-    vscode.commands.registerCommand(
-      "acidAi.applyStyleGuide",
+    vscode.commands.registerCommand("acidAi.applyStyleGuide",
       async () => {
         const editor = vscode.window.activeTextEditor;
         if (!editor || editor.selection.isEmpty) {

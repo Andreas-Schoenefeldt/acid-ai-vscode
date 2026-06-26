@@ -2,7 +2,7 @@
   "name": "acid-ai",
   "displayName": "Acid AI",
   "description": "Send selected code to Claude with a configurable style guide and view the result side-by-side.",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "engines": {
     "vscode": "^1.85.0"
   },
@@ -42,17 +42,15 @@
         {
           "submenu": "acidAi.submenu",
           "when": "editorHasSelection",
-          "group": "9_cutcopypaste"
+          "group": "1_modification"
         }
       ],
       "acidAi.submenu": [
         {
-          "command": "acidAi.applyStyleGuide", 
-          "title": "Refactor Selection by Style Guide"
+          "command": "acidAi.applyStyleGuide"
         },
         {
-          "command": "acidAi.newStyleGuide", 
-          "title": "New Style Guide"
+          "command": "acidAi.newStyleGuide"
         }
       ]
     },
@@ -78,12 +76,14 @@
     }
   },
   "scripts": {
-    "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./",
-    "vscode:prepublish": "npm run compile",
-    "package": "npm run build:webview && vsce package",
+    "compile": "tsc --noEmit -p ./",
+    "typecheck": "tsc --noEmit -p ./",
+    "vscode:prepublish": "npm run build:extension",
+    "package": "npm run typecheck && npm run build:extension && npm run build:webview && vsce package",
+    "build:extension": "esbuild src/extension.ts --bundle --platform=node --format=cjs --external:vscode --outfile=out/extension.js --minify",
     "build:webview": "esbuild src/webview/main.ts --bundle --format=iife --outfile=media/webview.js --minify",
-    "watch:webview": "esbuild src/webview/main.ts --bundle --format=iife --outfile=media/webview.js --watch"
+    "watch:webview": "esbuild src/webview/main.ts --bundle --format=iife --outfile=media/webview.js --watch",
+    "watch:extension": "esbuild src/extension.ts --bundle --platform=node --format=cjs --external:vscode --outfile=out/extension.js --watch"
   },
   "devDependencies": {
     "@types/markdown-it": "^14.1.2",
@@ -96,5 +96,6 @@
     "@anthropic-ai/sdk": "^0.106.0",
     "highlight.js": "^11.9.0",
     "markdown-it": "^14.1.0"
-  }
+  },
+  "license": "UNLICENSED"
 }
