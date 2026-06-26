@@ -2,7 +2,7 @@
   "name": "acid-ai",
   "displayName": "Acid AI",
   "description": "Send selected code to Claude with a configurable style guide and view the result side-by-side.",
-  "version": "0.0.1",
+  "version": "0.1.1",
   "engines": {
     "vscode": "^1.85.0"
   },
@@ -84,7 +84,6 @@
     "@types/markdown-it": "^14.1.2",
     "@types/node": "^20.19.43",
     "@types/vscode": "^1.85.0",
-    "@vscode/vsce": "^2.24.0",
     "esbuild": "^0.28.1",
     "typescript": "^5.4.0"
   },

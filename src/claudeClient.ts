@@ -22,12 +22,12 @@ async function trackCost(
   context: vscode.ExtensionContext,
   model: string,
   usage: Anthropic.Messages.Usage
-): Promise<void> {
+): Promise<string> {
   console.log(usage);
 
   const pricing = PRICING_USD_PER_MTOK[model];
   if (!pricing) throw new Error(`No pricing for ${model} found.`);
-  if (!usage) return; // no usage, silent return
+  if (!usage) return 'no cost'; // no usage, silent return
 
   const usd = (['input_tokens', 'output_tokens', 'cache_read_input_tokens', 'cache_creation_input_tokens'] as UsageTokenField[])
     .reduce((sum, tokenType) => sum + ((usage[tokenType] ?? 0) / _1M) * pricing[tokenType], 0);
@@ -40,6 +40,8 @@ async function trackCost(
 
   console.log(message);
   vscode.window.setStatusBarMessage(message, 8000);
+
+  return message;
 }
 
 export async function setApiKey(context: vscode.ExtensionContext): Promise<void> {
@@ -117,10 +119,10 @@ export async function callClaude(
     ],
   });
 
-  await trackCost(context, model, response.usage);
+  const costSummary = await trackCost(context, model, response.usage);
 
   return response.content
     .map((block) => (block.type === "text" ? block.text : ""))
     .join("\n")
-    .trim();
+    .trim() + `\n\n${costSummary}`;
 }

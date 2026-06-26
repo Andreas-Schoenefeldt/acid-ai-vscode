@@ -24,7 +24,7 @@ Press `F5` in VS Code to launch an Extension Development Host with this extensio
 | Setting | Default | Description |
 |---|---|---|
 | `acidAi.model` | `claude-sonnet-4-6` | Model used for requests |
-| `acidAi.styleGuidesPath` | `.vscode/style-guides` | Folder with style guide `.md` files |
+| `acidAi.styleGuidesPath` | `.vscode/acid-ai-style-guides` | Folder with style guide `.md` files |
 | `acidAi.maxTokens` | `4096` | Max output tokens |
 
 ## Packaging
