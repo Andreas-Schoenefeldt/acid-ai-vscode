@@ -71,12 +71,16 @@
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "vscode:prepublish": "npm run compile",
-    "package": "vsce package"
+    "package": "vsce package",
+    "build:webview": "esbuild src/webview/main.ts --bundle --format=iife --outfile=media/webview.js --minify",
+    "watch:webview": "esbuild src/webview/main.ts --bundle --format=iife --outfile=media/webview.js --watch"
   },
   "devDependencies": {
+    "@types/markdown-it": "^14.1.2",
     "@types/node": "^20.19.43",
     "@types/vscode": "^1.85.0",
     "@vscode/vsce": "^2.24.0",
+    "esbuild": "^0.28.1",
     "typescript": "^5.4.0"
   },
   "dependencies": {

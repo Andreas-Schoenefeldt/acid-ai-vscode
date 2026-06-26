@@ -8,6 +8,8 @@ export function showResult(
   markdownContent: string
 ): void {
 
+  console.log(markdownContent);
+
   if (currentPanel) {
     currentPanel.title = title;
     currentPanel.webview.postMessage({ type: "update", content: markdownContent });
@@ -15,11 +17,20 @@ export function showResult(
     return;
   }
 
+  console.log(vscode.Uri.joinPath(context.extensionUri, "media"));
+
   currentPanel = vscode.window.createWebviewPanel(
     "acidAiResult",
     title,
-    { viewColumn: vscode.ViewColumn.Beside, preserveFocus: true },
-    { enableScripts: true, retainContextWhenHidden: true }
+    { 
+      viewColumn: vscode.ViewColumn.Beside, 
+      preserveFocus: true 
+    },
+    { 
+      enableScripts: true, 
+      retainContextWhenHidden: true,
+      localResourceRoots: [vscode.Uri.joinPath(context.extensionUri, "media")], 
+    }
   );
 
   currentPanel.webview.html = getHtml(currentPanel.webview, context, markdownContent);
@@ -34,64 +45,41 @@ function getHtml(
   context: vscode.ExtensionContext,
   initialContent: string
 ): string {
-  const nonce = String(Date.now());
+  const scriptUri = webview.asWebviewUri(
+    vscode.Uri.joinPath(context.extensionUri, "media", "webview.js")
+  );
+  const styleUri = webview.asWebviewUri(
+    vscode.Uri.joinPath(context.extensionUri, "media", "webview.css")
+  );
+
+  // Pass initial content via a data attribute (avoids inline <script> entirely).
+  // main.ts reads this from the DOM on startup.
+  const escapedContent = initialContent
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;");
+
+  // No nonce needed: there is no inline script left to authorize.
+  // script-src/style-src are scoped to this webview's own resource origin.
+  const csp = [
+    "default-src 'none'",
+    `style-src ${webview.cspSource} 'unsafe-inline'`,
+    `script-src ${webview.cspSource}`,
+  ].join("; ");
+
+  console.log("extensionUri:", context.extensionUri.toString());
+  console.log("media root:", vscode.Uri.joinPath(context.extensionUri, "media").toString());
+  console.log("css webview uri:", scriptUri.toString());
 
   return /* html */ `<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline' https:; script-src 'nonce-${nonce}' https:;" />
-<style>
-  body {
-    font-family: var(--vscode-font-family);
-    color: var(--vscode-editor-foreground);
-    background: var(--vscode-editor-background);
-    padding: 16px 20px;
-    line-height: 1.5;
-  }
-  pre {
-    background: var(--vscode-textCodeBlock-background);
-    padding: 12px;
-    border-radius: 6px;
-    overflow-x: auto;
-  }
-  code { font-family: var(--vscode-editor-font-family); }
-  pre code { background: none; }
-  h1, h2, h3 { font-weight: 600; }
-  #content { white-space: normal; }
-</style>
-<link rel="stylesheet" href="media/github-dark.min.css">
+<meta http-equiv="Content-Security-Policy" content="${csp}" />
+<link rel="stylesheet" href="${styleUri}">
 </head>
 <body>
-<div id="content">Loading...</div>
-
-<script nonce="${nonce}" src="media/markdown-it.min.js"></script>
-<script nonce="${nonce}" src="media/highlight.min.js"></script>
-<script nonce="${nonce}">
-  const md = window.markdownit({
-    highlight: function (str, lang) {
-      try {
-        if (lang && hljs.getLanguage(lang)) {
-          return hljs.highlight(str, { language: lang }).value;
-        }
-      } catch (e) {}
-      return hljs.highlightAuto(str).value;
-    }
-  });
-
-  function render(text) {
-    document.getElementById('content').innerHTML = md.render(text);
-  }
-
-  window.addEventListener('message', (event) => {
-    const msg = event.data;
-    if (msg.type === 'update') {
-      render(msg.content);
-    }
-  });
-
-  render(${JSON.stringify(initialContent)});
-</script>
+  <div id="content" data-initial-content="${escapedContent}">Loading...</div>
+  <script src="${scriptUri}"></script>
 </body>
 </html>`;
 }

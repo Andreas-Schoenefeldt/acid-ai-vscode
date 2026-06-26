@@ -1,0 +1,62 @@
+body {
+  font-family: var(--vscode-font-family);
+  color: var(--vscode-editor-foreground);
+  background: var(--vscode-editor-background);
+  padding: 16px 20px;
+  line-height: 1.5;
+}
+
+pre {
+  background: var(--vscode-textCodeBlock-background);
+  padding: 12px;
+  border-radius: 6px;
+  overflow-x: auto;
+}
+
+code {
+  font-family: var(--vscode-editor-font-family);
+}
+
+pre code {
+  background: none;
+}
+
+h1,
+h2,
+h3 {
+  font-weight: 600;
+}
+
+#content {
+  white-space: normal;
+}
+
+.code-block {
+  position: relative;
+}
+
+.copy-button {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-family: var(--vscode-font-family);
+  color: var(--vscode-button-foreground);
+  background: var(--vscode-button-secondaryBackground, var(--vscode-button-background));
+  border: 1px solid var(--vscode-button-border, transparent);
+  border-radius: 4px;
+  cursor: pointer;
+  opacity: 0.8;
+}
+
+.copy-button:hover {
+  opacity: 1;
+  background: var(--vscode-button-secondaryHoverBackground, var(--vscode-button-hoverBackground));
+}
+
+.copy-button.copied {
+  background: var(--vscode-testing-iconPassed, #2da44e);
+  color: #fff;
+  opacity: 1;
+}
