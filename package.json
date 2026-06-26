@@ -1,0 +1,87 @@
+{
+  "name": "acid-ai",
+  "displayName": "Acid AI",
+  "description": "Send selected code to Claude with a configurable style guide and view the result side-by-side.",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "acidAi.applyStyleGuide",
+        "title": "Acid AI: Apply Style Guide to Selection"
+      },
+      {
+        "command": "acidAi.setApiKey",
+        "title": "Acid AI: Set Anthropic API Key"
+      },
+      {
+        "command": "acidAi.newStyleGuide",
+        "title": "Acid AI: New Style Guide"
+      }
+    ],
+    "submenus": [
+      {
+        "id": "acidAi.submenu",
+        "label": "Apply Acid AI"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "submenu": "acidAi.submenu",
+          "when": "editorHasSelection",
+          "group": "9_cutcopypaste"
+        }
+      ],
+      "acidAi.submenu": [
+        {
+          "command": "acidAi.applyStyleGuide"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Acid AI",
+      "properties": {
+        "acidAi.model": {
+          "type": "string",
+          "default": "claude-sonnet-4-6",
+          "description": "Anthropic model id to use."
+        },
+        "acidAi.styleGuidesPath": {
+          "type": "string",
+          "default": ".vscode/style-guides",
+          "description": "Workspace-relative folder containing style guide .md files."
+        },
+        "acidAi.maxTokens": {
+          "type": "number",
+          "default": 4096,
+          "description": "Max output tokens for the response."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "vscode:prepublish": "npm run compile",
+    "package": "vsce package"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.43",
+    "@types/vscode": "^1.85.0",
+    "@vscode/vsce": "^2.24.0",
+    "typescript": "^5.4.0"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.106.0",
+    "highlight.js": "^11.9.0",
+    "markdown-it": "^14.1.0"
+  }
+}
