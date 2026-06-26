@@ -9,6 +9,11 @@
   "categories": [
     "Other"
   ],
+  "publisher": "schoenef",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Andreas-Schoenefeldt/acid-ai-vscode.git"
+  },
   "activationEvents": [],
   "main": "./out/extension.js",
   "contributes": {
