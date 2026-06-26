@@ -36,7 +36,7 @@ async function trackCost(
   const newTotal = prevTotal + usd;
   await context.globalState.update(TOTAL_COST_KEY, newTotal);
 
-  const message = `Acid AI: \$${usd.toFixed(4)} this call · \$${newTotal.toFixed(2)} total`;
+  const message = `Acid AI: \$${usd.toFixed(4)} this call \$${newTotal.toFixed(2)} total`;
 
   console.log(message);
   vscode.window.setStatusBarMessage(message, 8000);
@@ -100,8 +100,8 @@ export async function callClaude(
             type: "text",
             text:
               "Apply the following style guide to the code below.\n" +
-              "Return only the rewritten code in a single fenced code block, " +
-              "with a short explanation after it if useful.\n\n" +
+              "Return only the rewritten code in a single fenced code block." +
+              "A short explanation only for critical remarks, as little as possible prose.\n\n" +
               "## Style guide\n" +
               styleGuideContent,
             cache_control: { type: "ephemeral" }, // <-- cached, reused across calls

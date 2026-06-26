@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import { listStyleGuides, createStyleGuide } from "./styleGuides";
 import { setApiKey, callClaude } from "./claudeClient";
-import { showResult } from "./resultPanel";
+import { showResult, showLoading } from "./resultPanel";
 
 export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
@@ -50,13 +50,17 @@ export function activate(context: vscode.ExtensionContext) {
           },
           async () => {
             try {
+              const title = `Style Guide: ${picked.guide.name}`;
+
+              showLoading(context, title);
+              
               const result = await callClaude(
                 context,
                 selectedText,
                 picked.guide.content,
                 languageId
               );
-              showResult(context, `Style Guide: ${picked.guide.name}`, result);
+              showResult(context, title, result);
             } catch (err: any) {
               vscode.window.showErrorMessage(
                 `Acid AI failed: ${err.message ?? err}`

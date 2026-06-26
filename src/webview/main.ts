@@ -3,6 +3,36 @@ import hljs from "highlight.js";
 import "./main.css";
 import "highlight.js/styles/github-dark.css";
 
+let currentAnswerSection : HTMLElement | null = null;
+
+window.addEventListener("message", handleEvent);
+
+function handleEvent(event: MessageEvent) : void {
+  const msg = event.data as { type: string; content?: string };
+
+  console.log(msg);
+
+  if (!currentAnswerSection) {
+    currentAnswerSection = document.createElement('div');
+    currentAnswerSection.classList.add('content_answer');
+
+    document.getElementById("content")?.prepend(currentAnswerSection);
+  }
+
+  switch (msg.type) {
+    case 'update':
+      currentAnswerSection.innerHTML = md.render(msg.content ?? '');
+      currentAnswerSection = null;
+      break;
+    case 'prepare':
+      currentAnswerSection.innerHTML = 'Loading...'
+      break;
+  }
+  if (msg.type === "update") {
+
+  }
+}
+
 const md: MarkdownIt = new MarkdownIt({
   highlight: (str: string, lang: string): string => {
     try {
@@ -32,13 +62,6 @@ md.renderer.rules.fence = (tokens, idx, options, env, self) => {
   <button class="copy-button" data-code="${encoded}" type="button">Copy</button>
   ${highlighted}
 </div>`;
-};
-
-function render(text: string): void {
-  const el = document.getElementById("content");
-  if (el) {
-    el.innerHTML = md.render(text);
-  }
 }
 
 async function copyToClipboard(button: HTMLButtonElement): Promise<void> {
@@ -71,14 +94,3 @@ document.addEventListener("click", (event) => {
     void copyToClipboard(button);
   }
 });
-
-window.addEventListener("message", (event: MessageEvent) => {
-  const msg = event.data as { type: string; content: string };
-  if (msg.type === "update") {
-    render(msg.content);
-  }
-});
-
-const contentEl = document.getElementById("content");
-const initial = contentEl?.getAttribute("data-initial-content") ?? "";
-render(initial);

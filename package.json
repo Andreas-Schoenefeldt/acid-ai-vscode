@@ -2,7 +2,7 @@
   "name": "acid-ai",
   "displayName": "Acid AI",
   "description": "Send selected code to Claude with a configurable style guide and view the result side-by-side.",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "engines": {
     "vscode": "^1.85.0"
   },
@@ -20,7 +20,7 @@
     "commands": [
       {
         "command": "acidAi.applyStyleGuide",
-        "title": "Acid AI: Apply Style Guide to Selection"
+        "title": "Acid AI: Refactor Selection by Style Guide"
       },
       {
         "command": "acidAi.setApiKey",
@@ -34,7 +34,7 @@
     "submenus": [
       {
         "id": "acidAi.submenu",
-        "label": "Apply Acid AI"
+        "label": "Acid AI"
       }
     ],
     "menus": {
@@ -47,7 +47,12 @@
       ],
       "acidAi.submenu": [
         {
-          "command": "acidAi.applyStyleGuide"
+          "command": "acidAi.applyStyleGuide", 
+          "title": "Refactor Selection by Style Guide"
+        },
+        {
+          "command": "acidAi.newStyleGuide", 
+          "title": "New Style Guide"
         }
       ]
     },
