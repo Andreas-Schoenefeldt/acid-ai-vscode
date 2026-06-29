@@ -31,6 +31,12 @@ h3 {
   white-space: normal;
 }
 
+.content_answer {
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--vscode-editor-foreground);
+}
+
 .code-block {
   position: relative;
 }
@@ -59,3 +65,51 @@ h3 {
   color: #fff;
   opacity: 1;
 }
+
+/* Loader */
+.lds-ring {
+  --loader-dimension: 1.3em;
+  /* change color here */
+  color: var(--vscode-editor-foreground);
+}
+
+.lds-ring,
+.lds-ring div {
+  box-sizing: border-box;
+}
+.lds-ring {
+  display: inline-block;
+  position: relative;
+  width: var(--loader-dimension);
+  height: var(--loader-dimension);
+}
+.lds-ring div {
+  box-sizing: border-box;
+  display: block;
+  position: absolute;
+  width: calc(var(--loader-dimension) * .75);
+  height: calc(var(--loader-dimension) * .75);
+  margin: calc(var(--loader-dimension) * .1);
+  border: calc(var(--loader-dimension) * .1) solid currentColor;
+  border-radius: 50%;
+  animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  border-color: currentColor transparent transparent transparent;
+}
+.lds-ring div:nth-child(1) {
+  animation-delay: -0.45s;
+}
+.lds-ring div:nth-child(2) {
+  animation-delay: -0.3s;
+}
+.lds-ring div:nth-child(3) {
+  animation-delay: -0.15s;
+}
+@keyframes lds-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+

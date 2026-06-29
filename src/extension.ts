@@ -15,6 +15,20 @@ export function activate(context: vscode.ExtensionContext) {
 
     vscode.commands.registerCommand("acidAi.applyStyleGuide",
       async () => {
+        // test the project is configured
+        const project = vscode.workspace.getConfiguration('acidAi').get('project');
+        if (!project) {
+          vscode.window.showWarningMessage("Please configure the project id.");
+          return;
+        }
+        
+        // test if the supabase connection is available
+        const supabaseConfig = vscode.workspace.getConfiguration('acidAi').get('supabase');
+        if (!supabaseConfig) {
+          vscode.window.showWarningMessage("Supabase is not configured.");
+          return;
+        }
+
         const editor = vscode.window.activeTextEditor;
         if (!editor || editor.selection.isEmpty) {
           vscode.window.showWarningMessage("Select some text first.");

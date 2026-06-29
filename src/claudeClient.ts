@@ -1,5 +1,6 @@
 import * as vscode from "vscode";
 import Anthropic from "@anthropic-ai/sdk";
+import { createClient } from '@supabase/supabase-js'
 
 const SECRET_KEY = "acidAi.anthropicApiKey";
 const TOTAL_COST_KEY = "acidAi.totalCost";
@@ -32,11 +33,28 @@ async function trackCost(
   const usd = (['input_tokens', 'output_tokens', 'cache_read_input_tokens', 'cache_creation_input_tokens'] as UsageTokenField[])
     .reduce((sum, tokenType) => sum + ((usage[tokenType] ?? 0) / _1M) * pricing[tokenType], 0);
 
-  const prevTotal = context.globalState.get<number>(TOTAL_COST_KEY, 0);
-  const newTotal = prevTotal + usd;
-  await context.globalState.update(TOTAL_COST_KEY, newTotal);
+  const supabaseConfig : {url: string, key: string}|undefined = vscode.workspace.getConfiguration('acidAi').get('supabase');
+  if (!supabaseConfig) {
+    throw new Error("Supabase is not configured");
+  }
+  const project : string|undefined = vscode.workspace.getConfiguration('acidAi').get('project');
 
-  const message = `Acid AI: \$${usd.toFixed(4)} this call \$${newTotal.toFixed(2)} total`;
+  const supabase = createClient(supabaseConfig.url, supabaseConfig.key);
+  const today = new Date()
+  const day = parseInt(today.toISOString().slice(0, 10).replace(/-/g, ''))
+  const { data } = await supabase
+    .from('ai_costs')
+    .select('cost')
+    .eq('day', day)
+    .eq('project', project)
+    .single();
+
+  let currentCost = data?.cost ?? 0;
+  currentCost += usd;
+
+  await supabase.from('ai_costs').upsert({ day: day, project: project, cost: currentCost });
+
+  const message = `Acid AI: \$${usd.toFixed(4)} this call \$${currentCost.toFixed(2)} total for <strong>${project}</strong> at ${today.toISOString().slice(0, 10)}`;
 
   console.log(message);
   vscode.window.setStatusBarMessage(message, 8000);

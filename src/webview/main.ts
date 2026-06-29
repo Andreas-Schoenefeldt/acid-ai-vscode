@@ -10,8 +10,6 @@ window.addEventListener("message", handleEvent);
 function handleEvent(event: MessageEvent) : void {
   const msg = event.data as { type: string; content?: string };
 
-  console.log(msg);
-
   if (!currentAnswerSection) {
     currentAnswerSection = document.createElement('div');
     currentAnswerSection.classList.add('content_answer');
@@ -25,7 +23,7 @@ function handleEvent(event: MessageEvent) : void {
       currentAnswerSection = null;
       break;
     case 'prepare':
-      currentAnswerSection.innerHTML = 'Loading...'
+      currentAnswerSection.innerHTML = '<div class="lds-ring"><div></div><div></div><div></div><div></div></div> Loading...'
       break;
   }
   if (msg.type === "update") {
