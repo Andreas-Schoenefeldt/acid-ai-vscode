@@ -80,6 +80,7 @@ h3 {
 .lds-ring {
   display: inline-block;
   position: relative;
+  top: calc(var(--loader-dimension) * .15);
   width: var(--loader-dimension);
   height: var(--loader-dimension);
 }
