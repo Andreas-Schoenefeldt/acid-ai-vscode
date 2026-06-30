@@ -44,9 +44,10 @@ export function showLoading(
 export function showResult(
   context: vscode.ExtensionContext,
   title: string,
-  markdownContent: string
+  markdownContent: string,
+  selection: {content: string, language?: string}
 ): void {
-  getOrCreatePanel(context, title).webview.postMessage({ type: "update", content: markdownContent });
+  getOrCreatePanel(context, title).webview.postMessage({ type: "update", content: markdownContent, title, selection});
 }
 
 function getHtml(

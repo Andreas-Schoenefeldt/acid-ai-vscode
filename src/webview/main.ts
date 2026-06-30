@@ -8,7 +8,7 @@ let currentAnswerSection : HTMLElement | null = null;
 window.addEventListener("message", handleEvent);
 
 function handleEvent(event: MessageEvent) : void {
-  const msg = event.data as { type: string; content?: string };
+  const msg = event.data as { type: string, content?: string, title?: string, selection?: {content: string, language?: string} };
 
   if (!currentAnswerSection) {
     currentAnswerSection = document.createElement('div');
@@ -19,7 +19,13 @@ function handleEvent(event: MessageEvent) : void {
 
   switch (msg.type) {
     case 'update':
-      currentAnswerSection.innerHTML = md.render(msg.content ?? '');
+
+      let content = msg.selection ? `<details>
+  <summary>Selection for: ${msg.title}</summary>
+  ${md.render('```' + (msg.selection.language || '') + '\n' + msg.selection.content + '\n```')}
+</details>` : ''
+
+      currentAnswerSection.innerHTML = content + md.render(msg.content ?? '');
       currentAnswerSection = null;
       break;
     case 'prepare':

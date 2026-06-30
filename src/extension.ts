@@ -73,7 +73,10 @@ export function activate(context: vscode.ExtensionContext) {
                 picked.guide.content,
                 languageId
               );
-              showResult(context, title, result);
+              showResult(context, title, result, {
+                content: selectedText,
+                language: languageId
+              });
             } catch (err: any) {
               vscode.window.showErrorMessage(
                 `Acid AI failed: ${err.message ?? err}`

@@ -54,7 +54,7 @@ async function trackCost(
 
   await supabase.from('ai_costs').upsert({ day: day, project: project, cost: currentCost });
 
-  const message = `Acid AI: \$${usd.toFixed(4)} this call \$${currentCost.toFixed(2)} total for <strong>${project}</strong> at ${today.toISOString().slice(0, 10)}`;
+  const message = `Acid AI: \$${usd.toFixed(4)} this call \$${currentCost.toFixed(2)} total for **${project}** at ${today.toISOString().slice(0, 10)}`;
 
   console.log(message);
   vscode.window.setStatusBarMessage(message, 8000);
